@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from 'src/dto/post.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -18,5 +18,11 @@ export class PostController {
   @Get('recent')
   async getRecentPosts() {
     return this.postService.getRecentPosts(10);
+  }
+
+  @Get(':user_id')
+  async getUserPosts(@Param('user_id') user_id: string) {
+    console.log('유저 포스트 요청 ', user_id);
+    return this.postService.getUserPosts(user_id);
   }
 }

@@ -52,7 +52,45 @@ export class PostService {
       };
     });
 
-    console.log(getpostDtos);
+    return getpostDtos;
+  }
+
+  async getUserPosts(user_id: string) {
+    const posts = await this.prisma.post.findMany({
+      take: 10,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      where: {
+        authorId: user_id,
+      },
+      select: {
+        id: false,
+        postId: true,
+        content: true,
+        authorId: true,
+        createdAt: true,
+        updatedAt: true,
+        author: {
+          select: {
+            nickname: true,
+          },
+        },
+      },
+    });
+
+    const getpostDtos = posts.map(post => {
+      return {
+        postId: post.postId,
+        authorId: post.authorId,
+        content: post.content,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        nickname: post.author.nickname,
+      };
+    });
+
+    console.log('유저 포스트 요청 결과', getpostDtos);
 
     return getpostDtos;
   }
